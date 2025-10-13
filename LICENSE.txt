@@ -34,7 +34,7 @@ Upon termination, all copies of the materials must be destroyed.
 
 7. No Warranty
 The contents of this repository are provided “as is,” without warranty of any kind, express or implied, including but not limited to warranties of merchantability or fitness for a particular purpose.
-ColourSwift Technologies Ltd shall not be liable for any damages arising from the use or inability to use these materials.
+ColourSwift Ltd shall not be liable for any damages arising from the use or inability to use these materials.
 
 8. Governing Law
 This License shall be governed by and interpreted in accordance with the laws of the United Kingdom.
