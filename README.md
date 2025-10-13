@@ -58,5 +58,5 @@ These files are intended solely for integration with ColourSwift products. Any a
 ## Attribution
 
 ColourSwift AVDatabase and ColourSwift AV+ Engine are components of the **ColourSwift Security Suite**.
-Copyright © 2025 ColourSwift Technologies Ltd.
+Copyright © 2025 ColourSwift Ltd.
 All rights reserved.
