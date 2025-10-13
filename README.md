@@ -19,7 +19,7 @@ Encrypted key file used internally by the engine to decrypt and authenticate the
 
 **/releases/**
 
-Contains signed APK builds of ColourSwift Secure Files for manual download. Builds are organized by architecture (for example, `arm64-v8a`, `armeabi-v7a`, or `x86_64`).
+Contains signed APK builds of ColourSwift Secure Files for manual download. Builds are organised by architecture (for example, `arm64-v8a`, `armeabi-v7a`, or `x86_64`).
 
 ---
 
@@ -50,7 +50,7 @@ To install safely:
 
 ## License and Usage Restrictions
 
-Copyright © 2025 ColourSwift Technologies.
+Copyright © 2025 ColourSwift.
 All rights reserved.
 The contents of this repository are proprietary and confidential. Redistribution, modification, reverse engineering, or derivative use of any file or binary without written permission from ColourSwift Technologies is strictly prohibited.
 These files are intended solely for integration with ColourSwift products. Any attempt to extract, decrypt, or repurpose the database or binaries outside of authorised software constitutes a breach of copyright and intellectual property rights.
