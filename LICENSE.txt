@@ -1,0 +1,41 @@
+ColourSwift AVDatabase Proprietary License
+Copyright © 2025 ColourSwift Ltd.
+All rights reserved.
+
+1. Ownership
+All files, data, and binaries contained within this repository, including but not limited to defs.vxpack, defs_key.bin, and any APK releases are the exclusive property of ColourSwift Ltd (“the Company”).
+All intellectual property rights, trade secrets, and technical know-how embodied in these materials remain the sole property of the Company.
+
+2. Grant of Use
+Authorised users are permitted to download and use the materials in this repository solely for their intended purpose within official ColourSwift applications and systems.
+No other rights are granted, either express or implied.
+This license does not transfer ownership, and no part of this repository may be used to create derivative works or integrated into third-party software without prior written consent from ColourSwift Technologies.
+
+3. Restrictions
+You may not:
+Copy, reproduce, modify, translate, or create derivative works based on any part of this repository.
+Distribute, sell, sublicense, rent, lease, or otherwise make the contents available to third parties.
+Reverse engineer, decompile, or disassemble the defs.vxpack, defs_key.bin, or any associated binaries.
+Attempt to decrypt, bypass, or alter the encryption mechanisms used by the ColourSwift AV+ Engine.
+Use the repository or its contents for any purpose other than operation within authorised ColourSwift products.
+Any unauthorised use or redistribution of these materials constitutes a violation of copyright law and may result in legal action.
+
+4. Security and Integrity
+All files in this repository are cryptographically verified components of the ColourSwift AV+ Engine.
+Any alteration, tampering, or unauthorised modification may render the software inoperable and void any applicable user rights or warranties.
+
+5. Distribution
+Only ColourSwift Ltd and its designated agents are authorised to distribute or publish updated versions of these files.
+Users should obtain all releases through official ColourSwift channels or through links provided on the Company’s website.
+
+6. Termination
+Any breach of this License will result in immediate termination of all rights granted herein.
+Upon termination, all copies of the materials must be destroyed.
+
+7. No Warranty
+The contents of this repository are provided “as is,” without warranty of any kind, express or implied, including but not limited to warranties of merchantability or fitness for a particular purpose.
+ColourSwift Ltd shall not be liable for any damages arising from the use or inability to use these materials.
+
+8. Governing Law
+This License shall be governed by and interpreted in accordance with the laws of the United Kingdom.
+Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.
