@@ -1,0 +1,267 @@
+===========================================================
+                 COLOURSWHIFT AV+ ENGINE
+===========================================================
+Last updated: October 2025
+Author: ColourSwift Ltd (United Kingdom)
+Location: /AntiVirus/AntivirusEngine
+-----------------------------------------------------------
+
+CONTENTS
+---------
+1. Overview
+2. Folder Structure
+3. Core Workflow
+4. Module Details
+5. Data Definitions & Heuristics
+6. Compilation Targets
+7. Integration via FFI
+8. Notes & Conventions
+===========================================================
+
+
+1. OVERVIEW
+------------
+The ColourSwift AV+ Engine is a standalone, cross-platform
+antivirus core written in Rust. It is compiled into:
+ - a Windows DLL  (`colourswift_av.dll`)
+ - an Android SO  (`libcolourswift_av.so`)
+ - an iOS static library (`libcolourswift_av.a`)
+
+The engine is designed for **offline detection**, **zero telemetry**, 
+and **deterministic scanning**. All processing occurs locally, 
+powered by a compact pattern-matching and hash-based system
+derived from ClamAV signatures (with encrypted definition sets).
+
+The Flutter app (CS Secure Files) communicates with the
+engine through an FFI bridge, sending file paths to be
+scanned and receiving structured JSON results.
+
+
+2. FOLDER STRUCTURE
+--------------------
+AntivirusEngine/
+│
+├── src/
+│   ├── lib.rs
+│   │   → Root entry exposing FFI interfaces.
+│   │
+│   └── engine/
+│       ├── mod.rs
+│       │   → Re-exports all submodules.
+│       │     Initializes the scanning core and exposes
+│       │     `Engine` struct globally.
+│       │
+│       ├── types.rs
+│       │   → All common data structures used across modules:
+│       │       - FileKind enum (PE, ELF, PDF, ZIP, etc.)
+│       │       - Detection / ScanResult structs
+│       │       - RuleMeta and LdbRule definitions
+│       │       - Engine struct (holds defs, Aho-Corasick automata)
+│       │
+│       ├── defs_loader.rs
+│       │   → Responsible for loading and decrypting
+│       │     virus definitions (`defs.vxpack` + `defs_key.bin`).
+│       │     Builds runtime structures for hash sets, byte
+│       │     signatures, and text patterns.
+│       │
+│       ├── decrypt.rs
+│       │   → AES-256-CBC decryption utility used by
+│       │     defs_loader to extract internal VXPack data.
+│       │
+│       ├── ac_builders.rs
+│       │   → Builds the Aho-Corasick automata for both text
+│       │     and byte-level signature matching.
+│       │     Optimizes patterns for O(n) scanning.
+│       │
+│       ├── scan.rs
+│       │   → The heart of the engine.
+│       │     Handles single-file scanning (`scan_one`),
+│       │     detection logic, file type detection,
+│       │     heuristic scanning, and LDB rule evaluation.
+│       │
+│       ├── util.rs
+│       │   → Helper utilities for hashing, normalization,
+│       │     file walking, and temporary handling.
+│       │
+│       └── ffi.rs
+│           → Provides a C ABI for integration with Dart/Flutter.
+│             Defines:
+│               - av_init(path_defs, tmp_dir)
+│               - av_scan(file_path)
+│               - av_free()
+│             Returns UTF-8 JSON strings for parsed results.
+│
+└── build_all.ps1
+    → PowerShell build script. Compiles all targets
+      (Windows, Android, iOS) using Cargo cross-compilation.
+
+
+3. CORE WORKFLOW
+-----------------
+The scanning pipeline operates as follows:
+
+(1) Initialization
+    - The Flutter app calls `av_init()`.
+    - `defs_loader.rs` decrypts `defs.vxpack` using the key
+      stored in `defs_key.bin` (AES-256).
+    - Hashes, text patterns, and byte signatures are loaded.
+    - Aho-Corasick DFAs are built via `ac_builders.rs`.
+    - The Engine struct is populated and stored globally.
+
+(2) Scanning a File
+    - The app calls `av_scan("/path/to/file")`.
+    - FFI routes this to `scan::scan_one(engine, path)`.
+
+(3) scan_one()
+    - Reads file bytes into memory.
+    - Detects `FileKind` (PE, PDF, ZIP, etc.).
+    - Computes SHA-256 hash and checks against known
+      malicious hashes.
+    - Runs Aho-Corasick pattern matching on both
+      textual and binary layers.
+    - Applies any LDB logic rules (multi-pattern combos).
+    - Runs heuristic rules (simple static behaviors like
+      `chmod 777`, `dexClassLoader`, `eval()`).
+
+(4) Result Construction
+    - All detections are compiled into a `ScanResult`:
+        {
+          path: "...",
+          status: "infected" | "clean",
+          method: "hash" | "bytesig" | "pattern" | "heuristic",
+          threat: "Trojan.Android.Generic",
+          sha256: "...",
+          confidence: "high" | "medium" | "low",
+          extra: { "heuristics": [...], "file_type": "Zip" }
+        }
+    - The structure is serialized via serde_json and
+      returned through FFI as a UTF-8 pointer.
+
+(5) Cleanup
+    - The app can call `av_free()` to release temporary memory.
+
+
+4. MODULE DETAILS
+------------------
+**mod.rs**
+  - Links all modules together.
+  - Makes `pub use types::*;` and initializes the Engine.
+
+**types.rs**
+  - Defines all common types and enums.
+  - `FileKind`: identifies file formats.
+  - `Detection`: single detection item (method, name, weight).
+  - `ScanResult`: result returned for each scan.
+  - `RuleMeta` / `LdbRule`: support ClamAV LDB-style logic.
+
+**defs_loader.rs**
+  - Decrypts and parses the database pack.
+  - Output: `LoadedDefs` containing
+      hashes, text_patterns, byte_sigs, ldb_rules, metas.
+
+**decrypt.rs**
+  - AES layer used by defs_loader.
+  - Uses `cbc::Decryptor<Aes256>` with PKCS7 padding.
+
+**ac_builders.rs**
+  - Converts loaded text and byte patterns into Aho-Corasick
+    automata.
+  - Creates indexed maps to link DFA hits to signatures.
+
+**scan.rs**
+  - Implements the actual scanning logic.
+  - Functions:
+      - `detect_file_type(bytes) -> FileKind`
+      - `run_heuristics(bytes, &FileKind)`
+      - `scan_one(engine, path) -> ScanResult`
+  - Uses pattern and byte-level DFAs for fast matching.
+  - Integrates heuristic and hash matching.
+  - Populates `extra` metadata with file type and heuristics.
+
+**util.rs**
+  - Hashing utilities (SHA-256).
+  - File normalization, safe temp directory handling.
+
+**ffi.rs**
+  - Bridges Rust to Dart.
+  - Provides safe C ABI function exports for Flutter.
+  - Converts JSON `ScanResult` into CStrings for FFI.
+
+
+5. DATA DEFINITIONS & HEURISTICS
+---------------------------------
+**Database Structure**
+ - `defs.vxpack`: Encrypted VX database
+   containing pattern hashes, text signatures, and
+   optional ClamAV LDB logic rules.
+ - `defs_key.bin`: AES key + IV (randomized per release).
+
+**Heuristics**
+ - Lightweight static detections for suspicious strings:
+   - `"dexClassLoader"` + `"System.loadLibrary"`
+   - `"chmod 777"` or `"su"`
+   - `"eval("` (self-executing scripts)
+ - Each heuristic adds:
+   - id: symbolic name (`HEU_PRIV_ESC`)
+   - severity: low / medium / high
+   - description: string message
+
+These are appended to the `extra.heuristics` field
+in `ScanResult`.
+
+
+6. COMPILATION TARGETS
+-----------------------
+The PowerShell script `/build_all.ps1` compiles
+three artifacts in one go:
+
+ - **Windows DLL**  
+   `windows/runner/colourswift_av.dll`
+
+ - **Android Shared Libraries**
+
+ android/app/src/main/jniLibs/arm64-v8a/libcolourswift_av.so
+android/app/src/main/jniLibs/armeabi-v7a/libcolourswift_av.so
+android/app/src/main/jniLibs/x86_64/libcolourswift_av.so
+
+7. INTEGRATION VIA FFI
+-----------------------
+Dart Bridge Signatures:
+typedef AvInitNative = Int32 Function(Pointer<Utf8>, Pointer<Utf8>);
+typedef AvScanNative = Pointer<Utf8> Function(Pointer<Utf8>);
+typedef AvFreeNative = Int32 Function();
+
+Rust Exports:
+#[no_mangle]
+pub extern "C" fn av_init(defs: *const c_char, tmp: *const c_char) -> c_int
+#[no_mangle]
+pub extern "C" fn av_scan(path: *const c_char) -> *mut c_char
+#[no_mangle]
+pub extern "C" fn av_free() -> c_int
+
+Lifecycle:
+av_init() → loads definitions
+av_scan() → runs scan_one() → returns JSON result
+av_free() → releases temporary memory
+
+The Flutter app receives UTF-8 strings, parses them
+to Dart Map<String, dynamic>, and displays the
+result in the Scan Results screen.
+
+8. NOTES & CONVENTIONS
+-----------------------
+- No analytics, logging, or network requests exist.
+- All detections are local.
+- Each module avoids unsafe code except for FFI exports.
+- All builds use --release mode for optimization.
+- Android/iOS builds are cross-compiled via Cargo targets:
+    aarch64-linux-android
+    armv7-linux-androideabi
+    x86_64-linux-android
+    aarch64-apple-ios
+- The system is designed to be modular;
+  future versions may plug in ML-based anomaly scanners.
+
+===========================================================
+END OF DOCUMENT
+===========================================================
