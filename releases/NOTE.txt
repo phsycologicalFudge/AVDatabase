@@ -1,0 +1,3 @@
+Note: APKs and application binaries located in the /releases directory are proprietary and remain
+the exclusive property of ColourSwift Ltd. They are not covered by the GPL license that applies
+to the open virus-definition files in this repository. They are available for download only.
