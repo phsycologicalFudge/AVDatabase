@@ -2,7 +2,7 @@
 
 ## Overview
 
-The ColourSwift AVDatabase repository contains the open virus-definition database and supporting data used by VX-TITANIUM, the offline antivirus engine powering CS Secure Files, CS Security and future ColourSwift security products.
+The ColourSwift AVDatabase repository contains the open virus-definition database and supporting data used by VX-TITANIUM, the offline antivirus engine powering CS Secure Files,[ CS Security](https://github.com/phsycologicalFudge/ColourSwift_AV) and future ColourSwift security products.
 
 This repository exists to distribute verified definition updates and public releases from the official ColourSwift website.
 
