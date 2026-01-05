@@ -17,16 +17,13 @@ All third-party content remains under its respective license and is used unmodif
 
 ---
 
-## ClamAV Definitions
+## ClamAV Definitions (Deprecated)
 
-Portions of this repository include ClamAV virus definition files.
+ClamAV definitions are no longer included in VXPack releases.
 
-- Project: ClamAV  
-- Maintainer: Cisco Systems, Inc.  
-- License: GNU General Public License v2 (GPL-2.0)  
-- Website: https://www.clamav.net/
+Deprecation version: VXPack 1.3.6
 
-ClamAV definition files are redistributed in accordance with their license terms.
+ClamAV's ndb and hdb files were previously used to increase detection coverage.
 
 ---
 
