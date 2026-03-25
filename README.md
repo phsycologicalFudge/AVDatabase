@@ -15,8 +15,6 @@ Note: Older folders such as release/ are deprecated and no longer used.
 This project includes third-party data sources used for malware detection and network protection.  
 All third-party content remains under its respective license and is used unmodified unless stated otherwise.
 
----
-
 ## ClamAV Definitions (Deprecated)
 
 ClamAV definitions are no longer included in VXPack releases.
@@ -24,8 +22,6 @@ ClamAV definitions are no longer included in VXPack releases.
 Deprecation version: VXPack 1.3.6
 
 ClamAV's ndb and hdb files were previously used to increase detection coverage.
-
----
 
 ## OISD Blocklist
 
@@ -38,8 +34,6 @@ This project includes the oisd blocklist (`oisd_small.txt`) for domain-based blo
 - Website: https://oisd.nl/
 
 The oisd blocklist is included as data only and remains licensed under GPL-3.0.
-
----
 
 ## Notes
 
