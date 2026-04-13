@@ -23,7 +23,8 @@ Deprecation version: VXPack 1.3.6
 
 ClamAV's ndb and hdb files were previously used to increase detection coverage.
 
-## OISD Blocklist
+## OISD Blocklist (Depreciated)
+Deprecation version: VXPack 1.3.6
 
 This project includes the oisd blocklist (`oisd_small.txt`) for domain-based blocking.
 
