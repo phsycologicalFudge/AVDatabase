@@ -6,7 +6,7 @@ The ColourSwift AVDatabase repository contains the open virus-definition databas
 
 This repository exists to distribute verified definition updates and public releases from the official ColourSwift website.
 
-Note: Older folders such as release/ are deprecated and no longer used.
+Note: Older folders such as release/ and vxpack_raw are deprecated and no longer used.
 
 
 
@@ -38,6 +38,6 @@ The oisd blocklist is included as data only and remains licensed under GPL-3.0.
 
 ## Notes
 
-All proprietary components, Bloom filter implementations, and VXPack formats are original works and are not covered by the above licenses.
+All proprietary components, Bloom filter implementations, VXPACK and CSPACK formats are original works and are not covered by the above licenses.
 
-© 2025 ColourSwift Technologies
+© 2025 - 2026 ColourSwift Technologies
