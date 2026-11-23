@@ -38,6 +38,6 @@ The oisd blocklist is included as data only and remains licensed under GPL-3.0.
 
 ## Notes
 
-All proprietary components, Bloom filter implementations, VXPACK and CSPACK formats are original works and are not covered by the above licenses.
+All proprietary components, implementations, VXPACK and CSPACK formats are original works and are not covered by the above Apache license.
 
 © 2025 - 2026 ColourSwift Technologies
